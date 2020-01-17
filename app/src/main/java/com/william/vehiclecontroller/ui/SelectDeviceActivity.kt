@@ -16,7 +16,7 @@ import org.jetbrains.anko.toast
 class SelectDeviceActivity : AppCompatActivity() {
 
     private var bluetoothAdapter: BluetoothAdapter? = null
-    private lateinit var pairedDevices: Set<BluetoothDevice>
+    lateinit var pairedDevices: Set<BluetoothDevice>
     private val requestEnableBluetooth = 1
 
     companion object {
@@ -51,17 +51,18 @@ class SelectDeviceActivity : AppCompatActivity() {
         } else {
             toast("No paired Bluetooth devices found")
         }
-
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, list)
+        val nameList: ArrayList<String> = ArrayList()
+        list.mapTo(nameList, { it.name })
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, nameList)
         select_device_list.adapter = adapter
         select_device_list.onItemClickListener = AdapterView.OnItemClickListener {
                 _, _, position, _  ->
-            val device: BluetoothDevice = list[position]
-            val address: String = device.address
+                    val device: BluetoothDevice = list[position]
+                    val address: String = device.address
 
-            val intent = Intent(this, ControllerActivity::class.java)
-            intent.putExtra(ADDRESS, address)
-            startActivity(intent)
+                    val intent = Intent(this, ControllerActivity::class.java)
+                    intent.putExtra(ADDRESS, address)
+                    startActivity(intent)
         }
     }
 
