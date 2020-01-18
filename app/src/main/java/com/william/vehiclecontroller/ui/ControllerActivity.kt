@@ -10,9 +10,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.william.vehiclecontroller.R
+import com.william.vehiclecontroller.data.ControllerData
 import kotlinx.android.synthetic.main.controller_layout.*
 import java.io.IOException
 import java.util.*
+
 
 class ControllerActivity: AppCompatActivity() {
 
@@ -31,16 +33,17 @@ class ControllerActivity: AppCompatActivity() {
         address = intent.getStringExtra(SelectDeviceActivity.ADDRESS)
         ConnectToDevice(this).execute()
 
-        left_joystick.setOnClickListener { sendCommand("left_command") }
-        right_joystick.setOnClickListener { sendCommand("right_command") }
+        left_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
+        right_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
         control_disconnect.setOnClickListener { disconnect() }
     }
 
-    // Going to have to make this async
-    private fun sendCommand(input: String) {
+    // Going to have to make this async (maybe)
+    private fun sendCommand(data: ControllerData) {
+        val dataString = (data.angle.toString() + "-" + data.strength.toString()).toByteArray()
         if (bluetoothSocket != null) {
             try {
-                bluetoothSocket!!.outputStream.write(input.toByteArray())
+                bluetoothSocket!!.outputStream.write(dataString)
             } catch (exception: IOException) {
                 exception.printStackTrace()
             }
