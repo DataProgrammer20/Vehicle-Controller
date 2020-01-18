@@ -31,8 +31,8 @@ class ControllerActivity: AppCompatActivity() {
         address = intent.getStringExtra(SelectDeviceActivity.ADDRESS)
         ConnectToDevice(this).execute()
 
-        control_left.setOnClickListener { sendCommand("left_command") }
-        control_right.setOnClickListener { sendCommand("right_command") }
+        left_joystick.setOnClickListener { sendCommand("left_command") }
+        right_joystick.setOnClickListener { sendCommand("right_command") }
         control_disconnect.setOnClickListener { disconnect() }
     }
 

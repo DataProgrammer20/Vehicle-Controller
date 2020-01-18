@@ -16,7 +16,7 @@ import org.jetbrains.anko.toast
 class SelectDeviceActivity : AppCompatActivity() {
 
     private var bluetoothAdapter: BluetoothAdapter? = null
-    lateinit var pairedDevices: Set<BluetoothDevice>
+    private lateinit var pairedDevices: Set<BluetoothDevice>
     private val requestEnableBluetooth = 1
 
     companion object {
