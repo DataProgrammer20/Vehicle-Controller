@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">VehicleController</string>
+    <string name="app_name">Vehicle Controller</string>
+    <string name="select_device_refresh">Refresh List</string>
 </resources>
