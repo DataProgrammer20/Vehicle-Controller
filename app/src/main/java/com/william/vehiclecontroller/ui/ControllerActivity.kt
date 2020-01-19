@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.controller_layout.*
 import java.io.IOException
 import java.util.*
 
-
 class ControllerActivity: AppCompatActivity() {
 
     companion object {
@@ -90,7 +89,7 @@ class ControllerActivity: AppCompatActivity() {
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
             if (!connectSuccess) {
-                Log.i("data", "Could not connect to device")
+                Log.i("Error", "Could not connect to device")
             } else {
                 isConnected = true
             }

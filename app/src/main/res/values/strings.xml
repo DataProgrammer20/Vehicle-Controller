@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Vehicle Controller</string>
-    <string name="select_device_refresh">Refresh List</string>
+    <string name="select_device_paired">Paired Devices</string>
+    <string name="select_device_discovered">Discovered Devices</string>
+    <string name="select_device_refresh">Refresh Lists</string>
+    <string name="scan">Scan</string>
     <string name="left_control">Left Control</string>
     <string name="right_control">Right Control</string>
     <string name="Disconnect">Disconnect</string>

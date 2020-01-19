@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.ListView
 import com.william.vehiclecontroller.R
 import kotlinx.android.synthetic.main.select_device_layout.*
 import org.jetbrains.anko.toast
@@ -19,11 +20,9 @@ import org.jetbrains.anko.toast
 class SelectDeviceActivity : AppCompatActivity() {
 
     private var bluetoothAdapter: BluetoothAdapter? = null
-    // ========================================================
     private var bluetoothReceiver: BroadcastReceiver? = null
     private val discoveredDeviceList: ArrayList<String> = ArrayList()
-    // ========================================================
-    //private lateinit var pairedDevices: Set<BluetoothDevice>
+    private lateinit var pairedDevices: Set<BluetoothDevice>
     private val requestEnableBluetooth = 1
 
     companion object {
@@ -31,9 +30,34 @@ class SelectDeviceActivity : AppCompatActivity() {
         private val discoveredDevices: ArrayList<BluetoothDevice> = ArrayList()
     }
 
+    private class BluetoothBroadcastReceiver: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent!!.action
+            if (BluetoothDevice.ACTION_FOUND == action) {
+                val device: BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                Log.i("Device", "device found: $device")
+                discoveredDevices.add(device)
+            }
+            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED == action) {
+                Log.i("Discovery", "Starting Bluetooth discovery")
+            }
+            if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED == action) {
+                Log.i("Discovery", "Finishing Bluetooth discovery")
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.select_device_layout)
+
+        Log.i("notify:", "Hello? 1")
+        bluetoothReceiver = BluetoothBroadcastReceiver()
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(BluetoothDevice.ACTION_FOUND)
+        intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
+        intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+        this.registerReceiver(bluetoothReceiver, intentFilter)
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if (bluetoothAdapter == null) {
@@ -48,75 +72,62 @@ class SelectDeviceActivity : AppCompatActivity() {
             bluetoothAdapter!!.cancelDiscovery()
         }
 
-        // Create Bluetooth BroadCast receiver, and filter Intents
-        // ========================================================
-        bluetoothReceiver = BluetoothBroadcastReceiver()
-        val intentFilter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-        this.registerReceiver(bluetoothReceiver, intentFilter)
-        // ========================================================
+        pairedDevicesList()
+        discoveredDevicesList()
+        select_device_refresh.setOnClickListener { pairedDevicesList() }
+        select_device_scan.setOnClickListener { discoveredDevicesList() }
 
-        // Start discovery process
         bluetoothAdapter!!.startDiscovery()
-
-        // Will want to changes this to accommodate discovery (original)
-        // Edit: Refresh the discovered device list
-        select_device_refresh.setOnClickListener { listDiscoveredDevices()/*pairedDeviceList()*/ }
-        // =================================
     }
 
-    // ========================================================
-    private class BluetoothBroadcastReceiver: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val action = intent!!.action
-            if (BluetoothDevice.ACTION_FOUND == action) {
-                val device: BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)  //.getParcelableArrayExtra(BluetoothDevice.EXTRA_DEVICE)
-                discoveredDevices.add(device)
+    // List's the discovered devices found by the BroadCast receiver
+    private fun discoveredDevicesList() {
+        val adapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_list_item_1, discoveredDeviceList)
+        if (discoveredDeviceList.size > 0) {
+            for (item in discoveredDeviceList) {
+                discoveredDeviceList.remove(item)
             }
         }
-    }
-
-    // ========================================================
-    // List's the discovered devices found by the BroadCast receiver
-    private fun listDiscoveredDevices() {
-        discoveredDevices.mapTo(discoveredDeviceList, { it.name + " - " + it.address})
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, discoveredDeviceList)
-        select_device_list.adapter = adapter
-        select_device_list.onItemClickListener = AdapterView.OnItemClickListener {
-                _, _, position, _  ->
-            val device: BluetoothDevice = discoveredDevices[position]
-            val address: String = device.address
-            val intent = Intent(this, ControllerActivity::class.java)
-            intent.putExtra(ADDRESS, address)
-            startActivity(intent)
+        if (discoveredDevices.isEmpty()) {
+            discoveredDeviceList.add("No Bluetooth devices discovered")
+            select_device_discovery_list.adapter = adapter
+        } else {
+            listDevices(select_device_discovery_list, discoveredDevices, discoveredDeviceList, adapter)
         }
     }
-    // ========================================================
 
-//    private fun pairedDeviceList() {
-//        pairedDevices = bluetoothAdapter!!.bondedDevices
-//        val list: ArrayList<BluetoothDevice> = ArrayList()
-//        if (pairedDevices.isNotEmpty()) {
-//            for (device: BluetoothDevice in pairedDevices) {
-//                list.add(device)
-//                Log.i("Device", "" + device)
-//            }
-//        } else {
-//            toast("No paired Bluetooth devices found")
-//        }
-//        val nameList: ArrayList<String> = ArrayList()
-//        list.mapTo(nameList, { it.name })
-//        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, nameList)
-//        select_device_list.adapter = adapter
-//        select_device_list.onItemClickListener = AdapterView.OnItemClickListener {
-//                _, _, position, _  ->
-//                    val device: BluetoothDevice = list[position]
-//                    val address: String = device.address
-//
-//                    val intent = Intent(this, ControllerActivity::class.java)
-//                    intent.putExtra(ADDRESS, address)
-//                    startActivity(intent)
-//        }
-//    }
+    private fun pairedDevicesList() {
+        val nameList: ArrayList<String> = ArrayList()
+        val list: ArrayList<BluetoothDevice> = ArrayList()
+        val adapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_list_item_1, nameList)
+        pairedDevices = bluetoothAdapter!!.bondedDevices
+        if (pairedDevices.isNotEmpty()) {
+            for (device: BluetoothDevice in pairedDevices) {
+                list.add(device)
+            }
+        } else {
+            nameList.add("No Bluetooth devices paired")
+            toast("No paired Bluetooth devices found")
+        }
+        listDevices(select_device_paired_list, list, nameList, adapter)
+    }
+
+    private fun listDevices(
+        view: ListView,
+        fromList: ArrayList<BluetoothDevice>,
+        toList: ArrayList<String>,
+        adapter: ArrayAdapter<String>) {
+        fromList.mapTo(toList, { it.name + " - " + it.address })
+        view.adapter = adapter
+        view.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, position, _ ->
+                val device: BluetoothDevice = fromList[position]
+                val address: String = device.address
+                val intent = Intent(this, ControllerActivity::class.java)
+                intent.putExtra(ADDRESS, address)
+                startActivity(intent)
+            }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
