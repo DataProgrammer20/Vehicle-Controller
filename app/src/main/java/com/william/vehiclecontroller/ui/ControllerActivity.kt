@@ -13,12 +13,24 @@ import com.william.vehiclecontroller.R
 import com.william.vehiclecontroller.data.ControllerData
 import kotlinx.android.synthetic.main.controller_layout.*
 import java.io.IOException
+import java.net.DatagramPacket
 import java.util.*
+
+// WiFi modules import
+import java.net.DatagramSocket
+import java.net.InetSocketAddress
 
 class ControllerActivity: AppCompatActivity() {
 
     companion object {
         var id: UUID = UUID.randomUUID()
+
+        // WiFi Stuff
+        private const val port = 2390
+        private val IP = InetSocketAddress("10.200.76.61", port)
+        var UDPSocket = DatagramSocket(port)
+        // =================
+
         var bluetoothSocket: BluetoothSocket? = null
         lateinit var progress: ProgressDialog
         lateinit var bluetoothAdapter: BluetoothAdapter
@@ -35,6 +47,16 @@ class ControllerActivity: AppCompatActivity() {
         left_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
         right_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
         control_disconnect.setOnClickListener { disconnect() }
+
+        // WiFi Stuff
+        UDPSocket.connect(IP)
+        if (!UDPSocket.isConnected) {
+            Log.i("WiFi Error", "We've got a problem...")
+        }
+        val byteArray = "hi".toByteArray()
+        UDPSocket.send(DatagramPacket(byteArray, 255))
+        UDPSocket.close()
+        // =============
     }
 
     // Going to have to make this async (maybe)
