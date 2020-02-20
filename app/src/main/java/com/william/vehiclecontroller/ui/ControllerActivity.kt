@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.william.vehiclecontroller.R
 import com.william.vehiclecontroller.data.ControllerData
 import kotlinx.android.synthetic.main.controller_layout.*
+import org.jetbrains.anko.async
 import java.io.IOException
 import java.net.DatagramPacket
 import java.util.*
@@ -25,11 +26,11 @@ class ControllerActivity: AppCompatActivity() {
     companion object {
         var id: UUID = UUID.randomUUID()
 
-        // WiFi Stuff
+        // WiFi Stuff =====================
         private const val port = 2390
         private val IP = InetSocketAddress("10.200.76.61", port)
         var UDPSocket = DatagramSocket(port)
-        // =================
+        // ==============================
 
         var bluetoothSocket: BluetoothSocket? = null
         lateinit var progress: ProgressDialog
@@ -48,15 +49,20 @@ class ControllerActivity: AppCompatActivity() {
         right_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
         control_disconnect.setOnClickListener { disconnect() }
 
-        // WiFi Stuff
-        UDPSocket.connect(IP)
-        if (!UDPSocket.isConnected) {
-            Log.i("WiFi Error", "We've got a problem...")
+        // WiFi Stuff =================================
+        async {
+            UDPSocket.connect(IP)
+            if (!UDPSocket.isConnected) {
+                Log.i("WiFi Error", "We've got a problem...")
+            }
+            val byteArray = "hi".toByteArray()
+            UDPSocket.send(DatagramPacket(byteArray, 255))
+            UDPSocket.close()
+            Log.i("Task Completed", "UDP Packets sent...")
         }
-        val byteArray = "hi".toByteArray()
-        UDPSocket.send(DatagramPacket(byteArray, 255))
-        UDPSocket.close()
-        // =============
+        Log.i("Alpha", "task")
+
+       //  ==================================
     }
 
     // Going to have to make this async (maybe)
