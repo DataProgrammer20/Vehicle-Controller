@@ -1,9 +1,6 @@
 package com.william.vehiclecontroller.ui
 
 import android.app.ProgressDialog
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
@@ -12,11 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.william.vehiclecontroller.R
 import com.william.vehiclecontroller.data.ControllerData
 import kotlinx.android.synthetic.main.controller_layout.*
-import org.jetbrains.anko.async
 import java.io.IOException
 import java.net.DatagramPacket
-import java.util.*
-
 // WiFi modules import
 import java.net.DatagramSocket
 import java.net.InetSocketAddress
