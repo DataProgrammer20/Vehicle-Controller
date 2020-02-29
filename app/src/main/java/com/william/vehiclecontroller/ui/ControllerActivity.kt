@@ -11,14 +11,16 @@ import com.william.vehiclecontroller.data.ControllerData
 import kotlinx.android.synthetic.main.controller_layout.*
 import java.io.IOException
 import java.lang.Exception
-import java.net.*
+import java.net.InetAddress
+import java.net.InetSocketAddress
+import java.net.DatagramPacket
+import java.net.DatagramSocket
 
 class ControllerActivity: AppCompatActivity() {
 
     companion object {
         private const val port = 2390
-        private val IPByteAddress = "10.200.79.254".toByteArray()
-        private val address = InetAddress.getByAddress(IPByteAddress)!!
+        private var address = InetAddress.getByName("10.200.79.254")
         private val IPSocketAddress = InetSocketAddress("10.200.79.254", port)
         var UDPSocket: DatagramSocket? = null
         lateinit var progress: ProgressDialog
@@ -32,41 +34,41 @@ class ControllerActivity: AppCompatActivity() {
             val manager = DeviceManager(this)
             manager.execute()
 
-            left_joystick.setOnMoveListener { angle, strength -> manager.sendCommand(ControllerData(angle, strength)) }
-            right_joystick.setOnMoveListener { angle, strength -> manager.sendCommand(ControllerData(angle, strength)) }
-            control_disconnect.setOnClickListener { manager.disconnect() }
+            left_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
+            right_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
+            control_disconnect.setOnClickListener { disconnect() }
         } catch(exception: Exception) {
+            exception.printStackTrace()
+        }
+    }
+
+    private fun sendCommand(data: ControllerData) {
+        val byteBuffer = (data.angle.toString() + "-" + data.strength.toString()).toByteArray()
+        if (UDPSocket != null) {
+            try {
+                val packet = DatagramPacket(byteBuffer, byteBuffer.size, address, port)
+                UDPSocket!!.send(packet)
+                Log.i("Packet Status", "UDP Packet sent")
+            } catch (exception: IOException) {
+                exception.printStackTrace()
+            }
+        }
+    }
+
+    private fun disconnect() {
+        try {
+            if (UDPSocket != null) {
+                UDPSocket!!.close()
+                UDPSocket = null
+                isConnected = false
+            }
+        } catch (exception: IOException) {
             exception.printStackTrace()
         }
     }
 
     private class DeviceManager(private val context: Context): AsyncTask<Void, Void, String>() {
         private var connectSuccess: Boolean = true
-
-        fun sendCommand(data: ControllerData) {
-            val byteArray = (data.angle.toString() + "-" + data.strength.toString()).toByteArray()
-            if (UDPSocket != null) {
-                try {
-                    val packet = DatagramPacket(byteArray, 255, address, port)
-                    UDPSocket!!.send(packet)
-                    Log.i("Task Completed", "UDP Packet sent...")
-                } catch (exception: IOException) {
-                    exception.printStackTrace()
-                }
-            }
-        }
-
-        fun disconnect() {
-            try {
-                if (UDPSocket != null) {
-                    UDPSocket!!.close()
-                    UDPSocket = null
-                    isConnected = false
-                }
-            } catch (exception: IOException) {
-                exception.printStackTrace()
-            }
-        }
 
         override fun onPreExecute() {
             super.onPreExecute()
