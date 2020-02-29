@@ -10,64 +10,58 @@ import com.william.vehiclecontroller.R
 import com.william.vehiclecontroller.data.ControllerData
 import kotlinx.android.synthetic.main.controller_layout.*
 import java.io.IOException
-import java.net.DatagramPacket
-// WiFi modules import
-import java.net.DatagramSocket
-import java.net.InetSocketAddress
+import java.net.*
 
 class ControllerActivity: AppCompatActivity() {
 
     companion object {
-        // var id: UUID = UUID.randomUUID()
-        // WiFi Stuff =====================
         private const val port = 2390
-        private val IP = InetSocketAddress("10.200.76.61", port)
+        private val IPByteAddress = "10.200.79.254".toByteArray()
+        private val address = InetAddress.getByAddress(IPByteAddress)!!
+        private val IPSocketAddress = InetSocketAddress("10.200.79.254", port)
         var UDPSocket: DatagramSocket? = null
-        // ==============================
         lateinit var progress: ProgressDialog
         var isConnected: Boolean = false
-        lateinit var address: String
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.controller_layout)
-        address = intent.getStringExtra(SelectDeviceActivity.ADDRESS)
-        ConnectToDevice(this).execute()
+        val manager = DeviceManager(this)
+        manager.execute()
 
-        left_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
-        right_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
-        control_disconnect.setOnClickListener { disconnect() }
+        left_joystick.setOnMoveListener { angle, strength -> manager.sendCommand(ControllerData(angle, strength)) }
+        right_joystick.setOnMoveListener { angle, strength -> manager.sendCommand(ControllerData(angle, strength)) }
+        control_disconnect.setOnClickListener { manager.disconnect() }
     }
 
-    // Going to have to make this async (maybe)
-    private fun sendCommand(data: ControllerData) {
-        val byteArray = (data.angle.toString() + "-" + data.strength.toString()).toByteArray()
-        if (UDPSocket != null) {
+    private class DeviceManager(private val context: Context): AsyncTask<Void, Void, String>() {
+        private var connectSuccess: Boolean = true
+
+        fun sendCommand(data: ControllerData) {
+            val byteArray = (data.angle.toString() + "-" + data.strength.toString()).toByteArray()
+            if (UDPSocket != null) {
+                try {
+                    val packet = DatagramPacket(byteArray, 255, address, port)
+                    UDPSocket!!.send(packet)
+                    Log.i("Task Completed", "UDP Packet sent...")
+                } catch (exception: IOException) {
+                    exception.printStackTrace()
+                }
+            }
+        }
+
+        fun disconnect() {
             try {
-                UDPSocket!!.send(DatagramPacket(byteArray, 255))
-                Log.i("Task Completed", "UDP Packet sent...")
+                if (UDPSocket != null) {
+                    UDPSocket!!.close()
+                    UDPSocket = null
+                    isConnected = false
+                }
             } catch (exception: IOException) {
                 exception.printStackTrace()
             }
         }
-    }
-
-    private fun disconnect() {
-        try {
-            if (UDPSocket != null) {
-                UDPSocket!!.close()
-                UDPSocket = null
-                isConnected = false
-            }
-        } catch (exception: IOException) {
-            exception.printStackTrace()
-        }
-        finish()
-    }
-
-    private class ConnectToDevice(private val context: Context): AsyncTask<Void, Void, String>() {
-        private var connectSuccess: Boolean = true
 
         override fun onPreExecute() {
             super.onPreExecute()
@@ -78,8 +72,8 @@ class ControllerActivity: AppCompatActivity() {
             try {
                 if (UDPSocket == null || !isConnected) {
                     UDPSocket = DatagramSocket(port)
-                    UDPSocket!!.connect(IP)
-                    if (!UDPSocket!!.isConnected) { Log.i("WiFi Error", "We've got a problem...") }
+                    UDPSocket!!.connect(IPSocketAddress)
+                    Log.i("WiFi status", "We are trying to connect...")
                 }
             } catch (exception: IOException) {
                 connectSuccess = false
@@ -91,9 +85,10 @@ class ControllerActivity: AppCompatActivity() {
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
             if (!connectSuccess) {
-                Log.i("Error", "Could not connect to device")
+                Log.i("Error", "Failed to connect to the device")
             } else {
                 isConnected = true
+                Log.i("success","Successfully connected to the device")
             }
             progress.dismiss()
         }

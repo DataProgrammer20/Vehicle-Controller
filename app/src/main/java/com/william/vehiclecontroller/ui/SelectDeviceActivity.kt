@@ -123,6 +123,7 @@ class SelectDeviceActivity : AppCompatActivity() {
             AdapterView.OnItemClickListener { _, _, position, _ ->
                 val device: BluetoothDevice = fromList[position]
                 val address: String = device.address
+                // This is where we start the new intent and activity
                 val intent = Intent(this, ControllerActivity::class.java)
                 intent.putExtra(ADDRESS, address)
                 startActivity(intent)
