@@ -24,17 +24,13 @@ import java.net.InetSocketAddress
 class ControllerActivity: AppCompatActivity() {
 
     companion object {
-        var id: UUID = UUID.randomUUID()
-
+        // var id: UUID = UUID.randomUUID()
         // WiFi Stuff =====================
         private const val port = 2390
         private val IP = InetSocketAddress("10.200.76.61", port)
-        var UDPSocket = DatagramSocket(port)
+        var UDPSocket: DatagramSocket? = null
         // ==============================
-
-        var bluetoothSocket: BluetoothSocket? = null
         lateinit var progress: ProgressDialog
-        lateinit var bluetoothAdapter: BluetoothAdapter
         var isConnected: Boolean = false
         lateinit var address: String
     }
@@ -48,29 +44,15 @@ class ControllerActivity: AppCompatActivity() {
         left_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
         right_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
         control_disconnect.setOnClickListener { disconnect() }
-
-        // WiFi Stuff =================================
-        async {
-            UDPSocket.connect(IP)
-            if (!UDPSocket.isConnected) {
-                Log.i("WiFi Error", "We've got a problem...")
-            }
-            val byteArray = "hi".toByteArray()
-            UDPSocket.send(DatagramPacket(byteArray, 255))
-            UDPSocket.close()
-            Log.i("Task Completed", "UDP Packets sent...")
-        }
-        Log.i("Alpha", "task")
-
-       //  ==================================
     }
 
     // Going to have to make this async (maybe)
     private fun sendCommand(data: ControllerData) {
-        val dataString = (data.angle.toString() + "-" + data.strength.toString()).toByteArray()
-        if (bluetoothSocket != null) {
+        val byteArray = (data.angle.toString() + "-" + data.strength.toString()).toByteArray()
+        if (UDPSocket != null) {
             try {
-                bluetoothSocket!!.outputStream.write(dataString)
+                UDPSocket!!.send(DatagramPacket(byteArray, 255))
+                Log.i("Task Completed", "UDP Packet sent...")
             } catch (exception: IOException) {
                 exception.printStackTrace()
             }
@@ -79,9 +61,9 @@ class ControllerActivity: AppCompatActivity() {
 
     private fun disconnect() {
         try {
-            if (bluetoothSocket != null) {
-                bluetoothSocket!!.close()
-                bluetoothSocket = null
+            if (UDPSocket != null) {
+                UDPSocket!!.close()
+                UDPSocket = null
                 isConnected = false
             }
         } catch (exception: IOException) {
@@ -100,12 +82,10 @@ class ControllerActivity: AppCompatActivity() {
 
         override fun doInBackground(vararg p0: Void?): String? {
             try {
-                if (bluetoothSocket == null || !isConnected) {
-                    bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-                    val device: BluetoothDevice = bluetoothAdapter.getRemoteDevice(address)
-                    bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(id)
-                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery()
-                    bluetoothSocket!!.connect()
+                if (UDPSocket == null || !isConnected) {
+                    UDPSocket = DatagramSocket(port)
+                    UDPSocket!!.connect(IP)
+                    if (!UDPSocket!!.isConnected) { Log.i("WiFi Error", "We've got a problem...") }
                 }
             } catch (exception: IOException) {
                 connectSuccess = false
