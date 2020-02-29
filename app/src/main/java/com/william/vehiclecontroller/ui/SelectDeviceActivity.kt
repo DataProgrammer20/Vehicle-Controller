@@ -16,6 +16,7 @@ import android.widget.ListView
 import com.william.vehiclecontroller.R
 import kotlinx.android.synthetic.main.select_device_layout.*
 import org.jetbrains.anko.toast
+import java.lang.Exception
 
 class SelectDeviceActivity : AppCompatActivity() {
 
@@ -49,35 +50,39 @@ class SelectDeviceActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.select_device_layout)
+        try {
+            setContentView(R.layout.select_device_layout)
 
-        Log.i("notify:", "Hello? 1")
-        bluetoothReceiver = BluetoothBroadcastReceiver()
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(BluetoothDevice.ACTION_FOUND)
-        intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
-        intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
-        this.registerReceiver(bluetoothReceiver, intentFilter)
+            Log.i("notify:", "Hello? 1")
+            bluetoothReceiver = BluetoothBroadcastReceiver()
+            val intentFilter = IntentFilter()
+            intentFilter.addAction(BluetoothDevice.ACTION_FOUND)
+            intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
+            intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+            this.registerReceiver(bluetoothReceiver, intentFilter)
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        if (bluetoothAdapter == null) {
-            toast("This device does not support Bluetooth")
-            return
+            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+            if (bluetoothAdapter == null) {
+                toast("This device does not support Bluetooth")
+                return
+            }
+            if (!bluetoothAdapter!!.isEnabled) {
+                val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                startActivityForResult(enableBluetoothIntent, requestEnableBluetooth)
+            }
+            if (bluetoothAdapter!!.isDiscovering) {
+                bluetoothAdapter!!.cancelDiscovery()
+            }
+
+            pairedDevicesList()
+            discoveredDevicesList()
+            select_device_refresh.setOnClickListener { pairedDevicesList() }
+            select_device_scan.setOnClickListener { discoveredDevicesList() }
+
+            bluetoothAdapter!!.startDiscovery()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
         }
-        if (!bluetoothAdapter!!.isEnabled) {
-            val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBluetoothIntent, requestEnableBluetooth)
-        }
-        if (bluetoothAdapter!!.isDiscovering) {
-            bluetoothAdapter!!.cancelDiscovery()
-        }
-
-        pairedDevicesList()
-        discoveredDevicesList()
-        select_device_refresh.setOnClickListener { pairedDevicesList() }
-        select_device_scan.setOnClickListener { discoveredDevicesList() }
-
-        bluetoothAdapter!!.startDiscovery()
     }
 
     // List's the discovered devices found by the BroadCast receiver
@@ -117,17 +122,21 @@ class SelectDeviceActivity : AppCompatActivity() {
         fromList: ArrayList<BluetoothDevice>,
         toList: ArrayList<String>,
         adapter: ArrayAdapter<String>) {
-        fromList.mapTo(toList, { it.name + " - " + it.address })
-        view.adapter = adapter
-        view.onItemClickListener =
-            AdapterView.OnItemClickListener { _, _, position, _ ->
-                val device: BluetoothDevice = fromList[position]
-                val address: String = device.address
-                // This is where we start the new intent and activity
-                val intent = Intent(this, ControllerActivity::class.java)
-                intent.putExtra(ADDRESS, address)
-                startActivity(intent)
-            }
+        try {
+            fromList.mapTo(toList, { it.name + " - " + it.address })
+            view.adapter = adapter
+            view.onItemClickListener =
+                AdapterView.OnItemClickListener { _, _, position, _ ->
+                    val device: BluetoothDevice = fromList[position]
+                    val address: String = device.address
+                    // This is where we start the new intent and activity
+                    val intent = Intent(this, ControllerActivity::class.java)
+                    intent.putExtra(ADDRESS, address)
+                    startActivity(intent)
+                }
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

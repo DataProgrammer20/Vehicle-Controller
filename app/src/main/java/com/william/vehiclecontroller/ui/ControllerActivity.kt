@@ -10,6 +10,7 @@ import com.william.vehiclecontroller.R
 import com.william.vehiclecontroller.data.ControllerData
 import kotlinx.android.synthetic.main.controller_layout.*
 import java.io.IOException
+import java.lang.Exception
 import java.net.*
 
 class ControllerActivity: AppCompatActivity() {
@@ -25,14 +26,18 @@ class ControllerActivity: AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.controller_layout)
-        val manager = DeviceManager(this)
-        manager.execute()
+        try {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.controller_layout)
+            val manager = DeviceManager(this)
+            manager.execute()
 
-        left_joystick.setOnMoveListener { angle, strength -> manager.sendCommand(ControllerData(angle, strength)) }
-        right_joystick.setOnMoveListener { angle, strength -> manager.sendCommand(ControllerData(angle, strength)) }
-        control_disconnect.setOnClickListener { manager.disconnect() }
+            left_joystick.setOnMoveListener { angle, strength -> manager.sendCommand(ControllerData(angle, strength)) }
+            right_joystick.setOnMoveListener { angle, strength -> manager.sendCommand(ControllerData(angle, strength)) }
+            control_disconnect.setOnClickListener { manager.disconnect() }
+        } catch(exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 
     private class DeviceManager(private val context: Context): AsyncTask<Void, Void, String>() {
