@@ -21,6 +21,7 @@ class ControllerActivity: AppCompatActivity() {
 
     companion object {
         private const val port = 2390
+        val ipAddressString = intent.getStringExtra(SelectDeviceActivity.ADDRESS)
         private var address = InetAddress.getByName("10.200.79.254")
         private val IPSocketAddress = InetSocketAddress("10.200.79.254", port)
         var UDPSocket: DatagramSocket? = null
