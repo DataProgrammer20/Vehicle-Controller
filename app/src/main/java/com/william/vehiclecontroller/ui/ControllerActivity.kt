@@ -21,18 +21,21 @@ class ControllerActivity: AppCompatActivity() {
 
     companion object {
         private const val port = 2390
-        val ipAddressString = intent.getStringExtra(SelectDeviceActivity.ADDRESS)
-        private var address = InetAddress.getByName("10.200.79.254")
-        private val IPSocketAddress = InetSocketAddress("10.200.79.254", port)
-        var UDPSocket: DatagramSocket? = null
-        lateinit var progress: ProgressDialog
-        var isConnected: Boolean = false
+        private lateinit var ipAddressString: String
+        private lateinit var address: InetAddress
+        private lateinit var IPSocketAddress: InetSocketAddress
+        private var UDPSocket: DatagramSocket? = null
+        private lateinit var progress: ProgressDialog
+        private var isConnected: Boolean = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         try {
             super.onCreate(savedInstanceState)
             setContentView(R.layout.controller_layout)
+            ipAddressString = intent.getStringExtra(SelectDeviceActivity.ipAddress)
+            address = InetAddress.getByName(ipAddressString)
+            IPSocketAddress = InetSocketAddress(ipAddressString, port)
             val manager = DeviceManager(this)
             manager.execute()
 
