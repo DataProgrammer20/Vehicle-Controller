@@ -7,89 +7,104 @@
     tools:context=".ui.SelectDeviceActivity">
 
     <TextView
-        android:id="@+id/select_device_paired_heading"
+        android:id="@+id/select_device_discovery_heading"
         android:layout_width="0dp"
-        android:layout_height="30dp"
+        android:layout_height="50dp"
         android:background="@color/colorPrimary"
-        android:text="@string/select_device_paired"
-        android:textColor="@android:color/background_light"
-        android:textSize="18sp"
-        android:paddingStart="15dp"
+        android:paddingStart="25dp"
         android:paddingLeft="15dp"
         android:paddingEnd="0dp"
         android:paddingRight="0dp"
+        android:paddingTop="5dp"
+        android:text="@string/network_device"
+        android:textColor="@android:color/background_light"
+        android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <ListView
-        android:id="@+id/select_device_paired_list"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/select_device_discovery_heading"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/select_device_paired_heading"
-        />
-
-    <TextView
-        android:id="@+id/select_device_discovery_heading"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
-        android:background="@color/colorPrimary"
-        android:text="@string/select_device_discovered"
-        android:textColor="@android:color/background_light"
-        android:textSize="18sp"
-        android:paddingStart="15dp"
-        android:paddingLeft="15dp"
-        android:paddingEnd="0dp"
-        android:paddingRight="0dp"
-        app:layout_constraintTop_toBottomOf="@id/select_device_paired_list"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/select_device_discovery_list"
-        />
-
-    <ListView
-        android:id="@+id/select_device_discovery_list"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginBottom="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/select_device_scan"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="parent"
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="339dp"
+        android:layout_height="51dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="@string/enterIP"
         app:layout_constraintTop_toBottomOf="@+id/select_device_discovery_heading"
-        />
-
-    <Button
-        android:id="@+id/select_device_scan"
-        android:text="@string/scan"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="20dp"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteX="36dp"
+        tools:layout_editor_absoluteY="205dp"
+        android:hint="@string/ipHint"
         />
 
     <Button
-        android:id="@+id/select_device_refresh"
-        android:text="@string/select_device_refresh"
+        android:id="@+id/connect"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:text="@string/connect"
+        app:layout_constraintTop_toBottomOf="@id/editText"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="15dp"
         />
+
+    <!--    <TextView-->
+<!--        android:id="@+id/select_device_paired_heading"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="30dp"-->
+<!--        android:background="@color/colorPrimary"-->
+<!--        android:text="@string/select_device_paired"-->
+<!--        android:textColor="@android:color/background_light"-->
+<!--        android:textSize="18sp"-->
+<!--        android:paddingStart="15dp"-->
+<!--        android:paddingLeft="15dp"-->
+<!--        android:paddingEnd="0dp"-->
+<!--        android:paddingRight="0dp"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        />-->
+
+<!--    <ListView-->
+<!--        android:id="@+id/select_device_paired_list"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/select_device_discovery_heading"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toLeftOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/select_device_paired_heading"-->
+<!--        />-->
+
+<!--        app:layout_constraintBottom_toTopOf="@id/select_device_discovery_list"-->
+
+<!--    <ListView-->
+<!--        android:id="@+id/select_device_discovery_list"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_marginBottom="15dp"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/select_device_scan"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toLeftOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/select_device_discovery_heading"-->
+<!--        />-->
+
+    <!--    <Button-->
+<!--        android:id="@+id/select_device_refresh"-->
+<!--        android:text="@string/select_device_refresh"-->
+<!--        android:layout_width="150dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        android:layout_marginStart="40dp"-->
+<!--        android:layout_marginLeft="40dp"-->
+<!--        android:layout_marginEnd="20dp"-->
+<!--        android:layout_marginRight="20dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:layout_marginBottom="20dp"-->
+<!--        />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,5 @@
 <resources>
+    <string name="network_device">Select Network Device</string>
     <string name="app_name">Vehicle Controller</string>
     <string name="select_device_paired">Paired Devices</string>
     <string name="select_device_discovered">Discovered Devices</string>
@@ -9,4 +10,7 @@
     <string name="Disconnect">Disconnect</string>
     <string name="forward">Forward</string>
     <string name="backward">Backward</string>
+    <string name="connect">Connect</string>
+    <string name="enterIP">Enter IP Address Here</string>
+    <string name="ipHint">Enter IP here</string>
 </resources>

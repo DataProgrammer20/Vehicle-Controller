@@ -2,6 +2,7 @@ package com.william.vehiclecontroller.ui
 
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -61,6 +62,8 @@ class ControllerActivity: AppCompatActivity() {
                 UDPSocket!!.close()
                 UDPSocket = null
                 isConnected = false
+                val intent = Intent(this, SelectDeviceActivity::class.java)
+                startActivity(intent)
             }
         } catch (exception: IOException) {
             exception.printStackTrace()
