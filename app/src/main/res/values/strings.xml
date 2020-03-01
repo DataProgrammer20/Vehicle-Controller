@@ -12,5 +12,4 @@
     <string name="backward">Backward</string>
     <string name="connect">Connect</string>
     <string name="enterIP">Enter IP Address Here</string>
-    <string name="ipHint">Enter IP here</string>
 </resources>

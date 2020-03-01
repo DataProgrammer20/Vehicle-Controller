@@ -21,7 +21,7 @@ import java.lang.Exception
 
 class SelectDeviceActivity : AppCompatActivity() {
 
-    private val discoveredDeviceList: ArrayList<String> = ArrayList()
+    //private val discoveredDeviceList: ArrayList<String> = ArrayList()
 
     companion object {
         const val ipAddress: String = "ip_address"
@@ -53,14 +53,12 @@ class SelectDeviceActivity : AppCompatActivity() {
 
 //            val sniffer = NetworkSniffer(this)
 //            sniffer.execute()
-
 //            bluetoothReceiver = BluetoothBroadcastReceiver()
 //            val intentFilter = IntentFilter()
 //            intentFilter.addAction(BluetoothDevice.ACTION_FOUND)
 //            intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
 //            intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
 //            this.registerReceiver(bluetoothReceiver, intentFilter)
-
 //            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 //            if (bluetoothAdapter == null) {
 //                toast("This device does not support Bluetooth")
@@ -73,14 +71,12 @@ class SelectDeviceActivity : AppCompatActivity() {
 //            if (bluetoothAdapter!!.isDiscovering) {
 //                bluetoothAdapter!!.cancelDiscovery()
 //            }
-
             //pairedDevicesList()
             //discoveredDevicesList()
             //select_device_refresh.setOnClickListener { pairedDevicesList() }
             //select_device_scan.setOnClickListener { discoveredDevicesList() }
-
             //bluetoothAdapter!!.startDiscovery()
-            connect.setOnClickListener{ createConnection() }
+            connect.setOnClickListener { createConnection() }
 
         } catch (exception: Exception) {
             exception.printStackTrace()
@@ -88,12 +84,11 @@ class SelectDeviceActivity : AppCompatActivity() {
     }
 
     private fun createConnection() {
-        val text = editText.text
+        val text = editText.text.toString()
         val intent = Intent(this, ControllerActivity::class.java)
         intent.putExtra(ipAddress, text)
         startActivity(intent)
     }
-
 
 //    // List's the discovered devices found by the BroadCast receiver
 //    private fun discoveredDevicesList() {
@@ -109,23 +104,6 @@ class SelectDeviceActivity : AppCompatActivity() {
 //        } else {
 //            //listDevices(select_device_discovery_list, discoveredDevices, discoveredDeviceList, adapter)
 //        }
-//    }
-
-    // probably delete this
-//    private fun pairedDevicesList() {
-//        val nameList: ArrayList<String> = ArrayList()
-//        val list: ArrayList<BluetoothDevice> = ArrayList()
-//        val adapter: ArrayAdapter<String> = ArrayAdapter(this, android.R.layout.simple_list_item_1, nameList)
-//        pairedDevices = bluetoothAdapter!!.bondedDevices
-//        if (pairedDevices.isNotEmpty()) {
-//            for (device: BluetoothDevice in pairedDevices) {
-//                list.add(device)
-//            }
-//        } else {
-//            nameList.add("No Bluetooth devices paired")
-//            toast("No paired Bluetooth devices found")
-//        }
-//        listDevices(select_device_paired_list, list, nameList, adapter)
 //    }
 
 //    // We will still use this...
@@ -149,22 +127,6 @@ class SelectDeviceActivity : AppCompatActivity() {
 //                }
 //        } catch (exception: Exception) {
 //            exception.printStackTrace()
-//        }
-//    }
-
-// probably don't need this anymore
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == requestEnableBluetooth) {
-//            if (resultCode == Activity.RESULT_OK) {
-//                if (bluetoothAdapter!!.isEnabled) {
-//                    toast("Bluetooth has been enabled")
-//                } else {
-//                    toast("Bluetooth has been disabled")
-//                }
-//            } else if (resultCode == Activity.RESULT_CANCELED) {
-//                toast("Bluetooth enabling has been canceled")
-//            }
 //        }
 //    }
 }
