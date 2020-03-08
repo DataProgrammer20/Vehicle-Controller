@@ -12,4 +12,5 @@
     <string name="backward">Backward</string>
     <string name="connect">Connect</string>
     <string name="enterIP">Enter IP Address Here</string>
+    <string name="imageDescription">Car Image</string>
 </resources>

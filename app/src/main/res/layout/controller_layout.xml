@@ -23,33 +23,11 @@
 <!--        app:layout_constraintTop_toTopOf="parent"-->
 <!--        />-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="140dp"
-        android:layout_marginRight="140dp"
-        android:text="@string/forward"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="164dp"-->
-<!--        android:layout_marginLeft="164dp"-->
-<!--        android:layout_marginTop="220dp"-->
-<!--        android:text="@string/backward"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        />-->
-
     <io.github.controlwear.virtual.joystick.android.JoystickView
         android:id="@+id/right_joystick"
         android:layout_width="200dp"
         android:layout_height="172dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="80dp"
         android:layout_marginRight="80dp"
         app:JV_backgroundColor="#FFFFFF"
@@ -62,28 +40,47 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-<!--    <TextView-->
-<!--        android:id="@+id/textView"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginStart="168dp"-->
-<!--        android:layout_marginLeft="168dp"-->
-<!--        android:layout_marginTop="28dp"-->
-<!--        android:text="@string/forward"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        />-->
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
-        android:layout_marginEnd="136dp"
-        android:layout_marginRight="136dp"
-        android:text="@string/backward"
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="145dp"
+        android:background="@mipmap/darkuparrow"
+        android:contentDescription="@string/imageDescription"
+        app:layout_constraintBottom_toTopOf="@id/right_joystick"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="225dp"
+        android:layout_marginRight="40dp"
+        android:background="@mipmap/darkrightarrow"
+        android:contentDescription="@string/imageDescription"
+        app:layout_constraintBottom_toTopOf="@id/right_joystick"
+        app:layout_constraintLeft_toRightOf="@id/right_joystick"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="145dp"
+        android:background="@mipmap/darkdownarrowrevised"
+        android:contentDescription="@string/imageDescription"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/right_joystick" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="225dp"
+        android:background="@mipmap/darkleftarrow"
+        android:contentDescription="@string/imageDescription"
+        app:layout_constraintBottom_toTopOf="@id/right_joystick"
+        app:layout_constraintRight_toLeftOf="@id/right_joystick"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/control_disconnect"

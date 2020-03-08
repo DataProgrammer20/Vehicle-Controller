@@ -1,22 +1,10 @@
 package com.william.vehiclecontroller.ui
 
-import android.app.Activity
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.net.Network
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
 import com.william.vehiclecontroller.R
 import kotlinx.android.synthetic.main.select_device_layout.*
-import org.jetbrains.anko.toast
 import java.lang.Exception
 
 class SelectDeviceActivity : AppCompatActivity() {
