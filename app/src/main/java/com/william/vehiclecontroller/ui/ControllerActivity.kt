@@ -39,7 +39,7 @@ class ControllerActivity: AppCompatActivity() {
             val manager = DeviceManager(this)
             manager.execute()
 
-            left_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
+            // left_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
             right_joystick.setOnMoveListener { angle, strength -> sendCommand(ControllerData(angle, strength)) }
             control_disconnect.setOnClickListener { disconnect() }
         } catch(exception: Exception) {
