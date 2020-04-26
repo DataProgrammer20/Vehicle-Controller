@@ -13,4 +13,6 @@
     <string name="connect">Connect</string>
     <string name="enterIP">Enter IP Address Here</string>
     <string name="imageDescription">Car Image</string>
+    <string name="extend_arm">Extend Arm</string>
+    <string name="retract_arm">Retract Arm</string>
 </resources>
